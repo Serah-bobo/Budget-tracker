@@ -1,6 +1,6 @@
 🌟 Shared Budget Tracker: Project Checklist
 📝 Phase 1: Planning & Setup
- Write project README.md (description, features, stack, setup steps).
+- [] Write project README.md (description, features, stack, setup steps).
 
  Create GitHub repository with branches (main, frontend, backend).
 
