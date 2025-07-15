@@ -8,6 +8,6 @@ export const generateResetToken = async (id: string): Promise<string> => {
 	if (!pswd_reset) {
 		throw new Error('RESET_TOKEN_SECRET is not defined');
 	}
-	const pswd_token = jwt.sign({ id }, pswd_reset, { expiresIn: '15min' });
+	const pswd_token = jwt.sign({ id }, pswd_reset, { expiresIn: '30min' });
 	return pswd_token;
 }

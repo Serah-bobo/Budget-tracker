@@ -4,6 +4,7 @@ import connectDB from '../Config/database'
 import authRoutes from '../Routes/authRoutes'
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import groupRoutes from '../Routes/groupRoutes';
 dotenv.config();// Load environment variables from .env file
 const app = express();// Create an Express application
 app.use(express.json());// Middleware to parse JSON bodies
@@ -15,6 +16,7 @@ app.use(cors({
 
 //routes
 app.use('/api/auth', authRoutes);// Use the authentication routes
+app.use('/api/groups', groupRoutes);// Use the group routes
 const port = process.env.PORT;// Set the port from environment variables 
 connectDB()
 app.listen(port,()=>{

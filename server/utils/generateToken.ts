@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const jwt_secret = process.env.JWT_Access_SECRET
+const jwt_secret = process.env.ACCESS_TOKEN_SECRET!;
 export const generateToken=async(id:string):Promise<string>=>{
     // Generate a JWT token
     try{
@@ -17,7 +17,7 @@ export const generateToken=async(id:string):Promise<string>=>{
         const token = jwt.sign(
         { id },  // Payload (user's id)
         jwt_secret,  // Secret key used for signing the token
-        { expiresIn: "15min" }  
+        { expiresIn: "1hr" }  
       );
   
       // Return the generated token

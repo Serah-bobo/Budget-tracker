@@ -9,9 +9,9 @@
     "strict": true,
     "outDir": "./dist",
     "baseUrl": "./src",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "lib": ["es6"]
   },
   "include": ["src"],
-
   "exclude": ["node_modules"]
 }

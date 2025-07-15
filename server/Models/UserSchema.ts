@@ -15,6 +15,8 @@ export interface IUser extends Document {
   otpExpires?: Date;
   resetToken?: string;
   resetTokenExpires?: Date;
+  groups: Types.ObjectId[];
+
 }
 
 const userSchema = new Schema<IUser>(
@@ -54,6 +56,12 @@ const userSchema = new Schema<IUser>(
       trim: true,
       select: false,
     },
+    groups: [
+      { type: Schema.Types.ObjectId, 
+        ref: 'Group' 
+      }
+    ],
+
   },
   { timestamps: true }
 );
