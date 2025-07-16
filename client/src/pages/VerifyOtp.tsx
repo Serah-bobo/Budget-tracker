@@ -40,7 +40,7 @@ export const VerifyOtp = () => {
       { ...data, userId } as any, // attach userId outside the schema and cast to any to avoid type error
       {
         onSuccess: () => {
-          navigate("/dashboard");
+          navigate("/");
         },
       }
     );
