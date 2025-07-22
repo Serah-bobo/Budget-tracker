@@ -37,14 +37,20 @@ export const VerifyOtp = () => {
     console.log("Submitting OTP form:", { ...data, userId });
 
     mutate(
-      { ...data, userId } as any, // attach userId outside the schema and cast to any to avoid type error
-      {
-        onSuccess: () => {
-            localStorage.setItem("isAuthenticated", "true");
-          navigate("/dashboard");
-        },
-      }
-    );
+  { ...data, userId } as any,
+  {
+    onSuccess: (response: any) => {
+      console.log("Verify OTP success:", response);
+
+      localStorage.setItem("accessToken", response.accessToken);
+      localStorage.setItem("userId", response.user.id);
+      localStorage.setItem("userName", response.user.name);
+
+      navigate("/dashboard");
+    },
+  }
+);
+
     console.log("userId in VerifyOtp:", userId);
 
   };
