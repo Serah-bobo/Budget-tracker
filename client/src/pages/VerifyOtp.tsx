@@ -40,10 +40,13 @@ export const VerifyOtp = () => {
       { ...data, userId } as any, // attach userId outside the schema and cast to any to avoid type error
       {
         onSuccess: () => {
-          navigate("/");
+            localStorage.setItem("isAuthenticated", "true");
+          navigate("/dashboard");
         },
       }
     );
+    console.log("userId in VerifyOtp:", userId);
+
   };
 
   return (

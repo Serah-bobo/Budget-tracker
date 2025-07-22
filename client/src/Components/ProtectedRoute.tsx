@@ -5,7 +5,7 @@ interface Props {
 }
 
 export const ProtectedRoute = ({ children }: Props) => {
-  const isLoggedIn = !!localStorage.getItem("accessToken"); // or use Context/Auth store
+  const isLoggedIn = !!localStorage.getItem("userId");
 
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;

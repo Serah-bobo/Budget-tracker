@@ -28,6 +28,7 @@ const onSubmit = async (data: LoginSchemaType) => {
 
     // assuming your backend sends: { user: { id: '...' }, ... }
     localStorage.setItem("userId", res.user.id);
+    
 
     navigate('/verify-otp', {
       state: { message: 'Login successful. Please enter the OTP sent to your email.' }
