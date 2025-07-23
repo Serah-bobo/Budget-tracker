@@ -26,7 +26,7 @@ const Groups = () => {
         <h1 className="mb-2 text-3xl font-bold">Your Groups</h1>
         <p className="text-gray-600">You haven’t joined or created any groups yet.</p>
         <Link
-          to="/dashboard/groups/create"
+          to="dashboard/groups/create"
           className="inline-block px-4 py-2 mt-4 text-white bg-indigo-600 rounded shadow hover:bg-indigo-700"
         >
           + Create Group

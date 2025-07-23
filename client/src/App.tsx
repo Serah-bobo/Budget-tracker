@@ -16,7 +16,9 @@ import Expenses from './dashboard/Expenses';
 import Goals from './dashboard/Goals';
 import Insights from './dashboard/Insights';
 import Settings from './dashboard/Settings';
-
+import GroupDetails from './dashboardDetails/GroupDetails';
+import CreateGroup from "dashboardDetails/CreateGroup";
+import { Toaster } from "react-hot-toast";
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -32,25 +34,35 @@ const App = () => {
       <Route path="/reset-password/:token" element={<ResetPassword />} />
       </Route>
         <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <DashboardLayout />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<DashboardHome />}/>
-           <Route path="groups" element={<Groups />} />
-           <Route path="expenses" element={<Expenses />} />
-          <Route path="goals" element={<Goals />} />
-          <Route path="insights" element={<Insights />} />
-          <Route path="settings" element={<Settings />} />
-        </Route>
+  path="/dashboard"
+  element={
+    <ProtectedRoute>
+      <DashboardLayout />
+    </ProtectedRoute>
+  }
+>
+  <Route index element={<DashboardHome />} />
+  <Route path="groups" element={<Groups />} />
+  <Route path="groups/create" element={<CreateGroup />} />
+  <Route path="groups/:groupId" element={<GroupDetails />} />
+  <Route path="expenses" element={<Expenses />} />
+  <Route path="goals" element={<Goals />} />
+  <Route path="insights" element={<Insights />} />
+  <Route path="settings" element={<Settings />} />
+</Route>
+
       </>
     )
   );
 
-  return <RouterProvider router={router} />;
+  return (
+  <>
+  <RouterProvider router={router} />;
+        <Toaster position="top-right" />
+  </>
+  )
+  
+
 };
 
 export default App;

@@ -86,8 +86,6 @@ export const getGroupById: RequestHandler = async (req, res) => {
         // Find the group by ID and populate members
         const group = await Group.findById(groupId)
         .populate('members', 'name email')
-        .populate('expenses')
-        .populate('goals');
         
         if (!group) {
             res.status(404).json({ message: 'Group not found' });
