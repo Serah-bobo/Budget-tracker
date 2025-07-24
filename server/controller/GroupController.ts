@@ -108,38 +108,46 @@ export const getGroupById: RequestHandler = async (req, res) => {
 
 export const joinGroup: RequestHandler = async (req, res) => {
   try {
-    const { groupId } = req.body;
+    const { inviteCode } = req.body;
     const userId = (req as CustomRequest).user.id;
 
-    const group = await Group.findById(groupId);
+    // Find group by invite code
+    const group = await Group.findOne({ inviteCode });
+
     if (!group) {
-      res.status(404).json({ message: 'Group not found' });
-      return;
+      res.status(404).json({ message: 'Invalid invite code' });
+        return;
     }
 
+    const groupId = group._id;
+
     // Check if already member
-    if (group.members.some(m => m.toString() === userId)) {
+    if (group.members.some((m) => m.toString() === userId)) {
       res.status(400).json({ message: 'You are already a member of this group' });
+        return;
     }
 
     // Check if already requested
     const existing = await Join.findOne({ group: groupId, user: userId, status: 'pending' });
     if (existing) {
       res.status(400).json({ message: 'You already requested to join this group' });
+        return;
     }
 
     const joinRequest = await Join.create({
       group: groupId,
       user: userId,
-      status: 'pending'
+      status: 'pending',
     });
 
     res.status(201).json({ message: 'Join request sent', joinRequest });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error' });
+    return;
   }
 };
+
 
 
 

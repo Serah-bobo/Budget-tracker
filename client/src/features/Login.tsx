@@ -24,10 +24,9 @@ export const LoginUser = () => {
 
 const onSubmit = async (data: LoginSchemaType) => {
   try {
-    const res = await mutateAsync(data); // <- this is the response from backend
-
-    // assuming your backend sends: { user: { id: '...' }, ... }
+    const res = await mutateAsync(data); 
     localStorage.setItem("userId", res.user.id);
+    localStorage.setItem("accessToken", res.accessToken);
     
 
     navigate('/verify-otp', {

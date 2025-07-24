@@ -25,6 +25,15 @@ const Groups = () => {
       <div className="py-20 text-center">
         <h1 className="mb-2 text-3xl font-bold">Your Groups</h1>
         <p className="text-gray-600">You haven’t joined or created any groups yet.</p>
+        <p className="mt-2 text-gray-500">
+          Join a group to start managing your budget together!
+        </p>
+        <Link
+      to="/dashboard/groups/join"
+      className="px-4 py-2 text-white bg-green-600 rounded shadow hover:bg-green-700"
+    >
+      + Join Group
+    </Link>
         <Link
           to="dashboard/groups/create"
           className="inline-block px-4 py-2 mt-4 text-white bg-indigo-600 rounded shadow hover:bg-indigo-700"
@@ -39,12 +48,20 @@ const Groups = () => {
     <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Your Groups</h1>
+          <div className="flex gap-3">
+        <Link
+          to="/dashboard/groups/join"
+          className="px-4 py-2 text-white bg-green-600 rounded shadow hover:bg-green-700"
+        >
+          Join Group
+        </Link>
         <Link
           to="/dashboard/groups/create"
           className="px-4 py-2 text-white bg-indigo-600 rounded shadow hover:bg-indigo-700"
         >
-          + Create Group
+          Create Group
         </Link>
+      </div>
       </div>
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">

@@ -2,6 +2,7 @@
 //queryKey is used to uniquely identify the query
 //queryFn is the function that fetches the data
 import { useQuery,useQueryClient,useMutation } from "@tanstack/react-query";
+import refreshToken from '../api/refreshToken'
 const API_URL = "http://localhost:5000/api/groups";
 
 interface CreateGroupPayload {
@@ -13,15 +14,7 @@ export const useUserGroups = () => {
     return useQuery({
         queryKey:['userGroups'],
         queryFn:async ()=>{
-            const token= localStorage.getItem("accessToken");
-            if(!token){
-                throw new Error("No access token found");
-            }
-            const res= await fetch(`${API_URL}/`,{
-                headers:{
-                    authorization:`Bearer ${token}`,
-                }
-            })
+            const res= await refreshToken(API_URL)
             if(!res.ok){
                 throw new Error("Failed to fetch user groups");
             }
@@ -38,11 +31,7 @@ export const useGroupDetails = (groupId: string) => {
             if (!token) {
                 throw new Error("No access token found");
             }
-            const res = await fetch(`${API_URL}/${groupId}`, {
-                headers: {
-                    authorization: `Bearer ${token}`,
-                }
-            });
+            const res = await refreshToken(`${API_URL}/${groupId}`);
             if (!res.ok) {
                 throw new Error("Failed to fetch group details");
             }
@@ -59,11 +48,10 @@ export const useCreateGroup = () => {
 const queryClient = useQueryClient();
     return useMutation({
         mutationFn:async(data: CreateGroupPayload) => {
-         const res= await fetch(`${API_URL}/create`, {
+         const res= await refreshToken(`${API_URL}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                authorization: `Bearer ${localStorage.getItem("accessToken")}`,
             },
             body: JSON.stringify(data),
          })
@@ -82,3 +70,33 @@ const queryClient = useQueryClient();
         }
     })
 }
+
+//join group
+export const useJoinGroup = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (inviteCode: string) => {
+      console.log("Joining group with invite code:", inviteCode);
+
+      const res = await refreshToken(`${API_URL}/join`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ inviteCode }), // not groupId
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to join group");
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userGroups'] });
+    },
+  });
+};
+

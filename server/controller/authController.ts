@@ -76,7 +76,7 @@ export const signUpUser=async(req: Request, res: Response): Promise<void> => {
                 name: newUser.name,
                 email: newUser.email,
             },
-            accessToken,        });
+            accessToken});
         return;       
     } catch (error) {
         console.error('Error signing up user:', error);
@@ -112,7 +112,7 @@ export const loginUser=async (req: Request, res: Response): Promise<void> => {
     // If the password matches, proceed with login using otp
     const otpCode = generateOtp(); // Generate a 6-digit OTP
     user.otpCode = otpCode; // Store the OTP in the user document
-    user.otpExpires = new Date(Date.now() + 10 * 60 * 1000); // Set OTP expiration time (10 minutes)
+    user.otpExpires = new Date(Date.now() + 30 * 60 * 1000); // Set OTP expiration time (30 minutes)
     await user.save(); // Save the updated user document to the database
     // Send the OTP to the user's email
   const html = `
@@ -207,7 +207,7 @@ export const verify2FA = async (req: Request, res: Response): Promise<void> => {
         httpOnly: true, // Prevents JavaScript access to the cookie
         secure: process.env.NODE_ENV === 'production', // Use secure cookies in production
         sameSite: 'strict', // Helps prevent CSRF attacks
-        maxAge: 24 * 60 * 60 * 1000, // Cookie expiration time (1 day)
+        maxAge: 7*24 * 60 * 60 * 1000, 
     });
     // Respond with the user data and token
     res.status(200).json({
@@ -257,7 +257,7 @@ export const forgotPassword = async (req: Request, res: Response): Promise<void>
   console.log('RESET TOKEN:', resetToken);
   // Set the reset token and its expiration time
   user.resetToken = resetToken;
-  user.resetTokenExpires = new Date(Date.now() + 15 * 60 * 1000); // Token valid for 15 minutes
+  user.resetTokenExpires = new Date(Date.now() + 30 * 60 * 1000); 
   await user.save(); // Save the updated user document to the database
   // Construct the password reset link
   const resetLink = `${process.env.PASSWORD_RESET_URL}/${resetToken}`; // Use the environment variable for the reset URL

@@ -17,7 +17,7 @@ export const generateToken=async(id:string):Promise<string>=>{
         const token = jwt.sign(
         { id },  // Payload (user's id)
         jwt_secret,  // Secret key used for signing the token
-        { expiresIn: "1hr" }  
+        { expiresIn: "2hr" }  
       );
   
       // Return the generated token

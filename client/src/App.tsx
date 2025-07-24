@@ -19,6 +19,7 @@ import Settings from './dashboard/Settings';
 import GroupDetails from './dashboardDetails/GroupDetails';
 import CreateGroup from "dashboardDetails/CreateGroup";
 import { Toaster } from "react-hot-toast";
+import JoinGroup from "dashboardDetails/JoinGroup";
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -45,6 +46,8 @@ const App = () => {
   <Route path="groups" element={<Groups />} />
   <Route path="groups/create" element={<CreateGroup />} />
   <Route path="groups/:groupId" element={<GroupDetails />} />
+  <Route path="groups/join" element={<JoinGroup />} />
+
   <Route path="expenses" element={<Expenses />} />
   <Route path="goals" element={<Goals />} />
   <Route path="insights" element={<Insights />} />
