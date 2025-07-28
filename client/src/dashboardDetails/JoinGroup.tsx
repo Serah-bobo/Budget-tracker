@@ -30,7 +30,6 @@ const JoinGroup = () => {
     mutate(data.groupCode, {
       onSuccess: (response) => {
         toast.success("Joined group successfully!");
-        navigate(`/dashboard/groups/${response.group._id}`);
       },
       onError: (err: any) => {
         toast.error(

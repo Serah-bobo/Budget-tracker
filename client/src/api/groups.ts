@@ -100,3 +100,77 @@ export const useJoinGroup = () => {
   });
 };
 
+//useLeaveGroup 
+export const useLeaveGroup = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (groupId: string) => {
+      const res = await refreshToken(`${API_URL}/leave/${groupId}`, {
+        method: 'POST',
+        
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to leave group");
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userGroups'] });
+      queryClient.invalidateQueries({ queryKey: ['user'] });
+    },
+  });
+};
+//useUpdateGroup
+export const useUpdateGroup = (groupId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (data: CreateGroupPayload) => {
+      const res = await refreshToken(`${API_URL}/${groupId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to update group");
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userGroups'] });
+      queryClient.invalidateQueries({ queryKey: ['groupDetails', groupId] });
+    },
+  });
+};
+//useDeleteGroup
+export const useDeleteGroup = (groupId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async () => {
+      const res = await refreshToken(`${API_URL}/${groupId}`, {
+        method: 'DELETE',
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || "Failed to delete group");
+      }
+
+      return res.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['userGroups'] });
+      queryClient.invalidateQueries({ queryKey: ['groupDetails', groupId] });
+    },
+  });
+};

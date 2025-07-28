@@ -151,37 +151,58 @@ export const joinGroup: RequestHandler = async (req, res) => {
 
 
 
-// Leave a group
 export const leaveGroup = async (req: Request, res: Response) => {
-    try{
-        const { groupId } = req.params;
-        const userId = (req as CustomRequest).user.id;
-        // Validate input
-        const group = await Group.findById(groupId);
+  try {
+    const { groupId } = req.params;
+    const userId = (req as CustomRequest).user.id;
 
-        if (!group) {
-            res.status(400).json({ message: 'Group ID is required' });
-            return;
-        }
-        // Check if the user is a member of the group
-        if (!group.members.some(member => member._id?.toString() === userId)) {
-            res.status(403).json({ message: 'Forbidden: You are not a member of this group' });
-            return;
-        }
-        // Remove user from group members
-        group.members = group.members.filter(member => member._id?.toString() !== userId);
-        await group.save();
-        // Remove group from user's groups
-        await User.findByIdAndUpdate(userId, {
-            $pull: { groups: group._id } // Use $pull to remove the group from user's groups
-        });
-        res.status(200).json({ message: 'Successfully left the group' });
-
-    }catch (error) {
-        console.error('Error leaving group:', error);
-        res.status(500).json({ message: 'Internal server error' });
+    // Find group
+    const group = await Group.findById(groupId);
+    if (!group) {
+       res.status(400).json({ message: "Group not found" });
+        return;
     }
-}
+
+    // Check if user is a member
+    const isMember = group.members.some(
+      (member) => member._id?.toString() === userId
+    );
+    if (!isMember) {
+      res
+        .status(403)
+        .json({ message: "Forbidden: You are not a member of this group" });
+        return;
+    }
+
+    // Remove user from group members
+    group.members = group.members.filter(
+      (member) => member._id?.toString() !== userId
+    );
+    await group.save();
+
+    // Remove group from user's groups
+    await User.findByIdAndUpdate(userId, {
+      $pull: { groups: group._id },
+    });
+
+    // Delete group if no members left
+    if (group.members.length === 0) {
+      await Group.findByIdAndDelete(groupId);
+      res
+        .status(200)
+        .json({ message: "You left and the group was deleted" });
+        return;
+    }
+
+    // Success message if group still has members
+    res.status(200).json({ message: "Successfully left the group" });
+  } catch (error) {
+    console.error("Error leaving group:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
+};
+
 
 // Update group details(only owner can update)
 export const updateGroup = async (req: Request, res: Response) =>{
