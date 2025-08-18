@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { HelmetProvider } from 'react-helmet-async';
+import {  HelmetProvider } from '@dr.pogodin/react-helmet';
 
 const queryClient = new QueryClient();
 

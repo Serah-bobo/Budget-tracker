@@ -11,32 +11,37 @@ import dotenv from 'dotenv';
 import jwt from 'jsonwebtoken';
 dotenv.config();
 
-export const signUpUser=async(req: Request, res: Response): Promise<void> => {
-    const verifyLink= process.env.EMAIL_VERIFY_URL;
-    const { name, email, password } = req.body;
-    // Check if all required fields are provided
-    if (!name || !email || !password) {
-        res.status(400).json({ message: 'Please provide all required fields' });
-        return;
-    }
-    // Check if the user already exists
-    const existingUser = await User.findOne({email});
-    if (existingUser) {
-        res.status(400).json({ message: 'User already exists' });
-        return;
-    }
-    // Create a new user
+export const signUpUser = async (req: Request, res: Response): Promise<void> => {
+  const verifyLink = process.env.EMAIL_VERIFY_URL;
+  const { name, email, password } = req.body;
+
+  // 1. Validate input
+  if (!name || !email || !password) {
+    res.status(400).json({ message: 'Please provide all required fields' });
+    return;
+  }
+
+  // 2. Check if user exists
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    res.status(400).json({ message: 'User already exists' });
+    return;
+  }
+
+  try {
+    // 3. Create new user
     const newUser = new User({ name, email, password });
-    // Generate an email verification token
+
+    // 4. Generate verification token
     const verifyToken = await generateEmailToken(newUser._id.toString());
-    try{
-        // Save the new user to the database
-       newUser.verifyToken= verifyToken
-       const savedUser=await newUser.save();
-        // Send verification email
-        const verificationLink=`${verifyLink}/${verifyToken}`; // Construct the verification link
-        //email content
-        const html = `
+    newUser.verifyToken = verifyToken;
+
+    // 5. Save user (only once)
+    const savedUser = await newUser.save();
+
+    // 6. Send verification email
+    const verificationLink = `${verifyLink}/${verifyToken}`;
+    const html = `
       <div style="font-family: Arial, sans-serif; line-height: 1.5; color: #333;">
         <h2>Welcome to Our App, ${savedUser.name} 👋</h2>
         <p>We're excited to have you on board! Please verify your email address to activate your account:</p>
@@ -52,38 +57,43 @@ export const signUpUser=async(req: Request, res: Response): Promise<void> => {
         <small>This link will expire in 5 minutes.</small>
       </div>
     `;
-    // Send the verification email
+
     await sendEmail({
-            to: savedUser.email,
-            subject: 'please verify your email address',
-            html,
-    })
-        // Generate a token for the user
-    const accessToken = await generateToken(savedUser._id.toString());// Generate an access token for the user
-    const refreshToken = await generateRefreshToken(savedUser._id.toString());// Generate a refresh token for the user        //Set token in HTTP-only cookie
-        
-     res.cookie('refreshToken', refreshToken, {
+      to: savedUser.email,
+      subject: 'Please verify your email address',
+      html,
+    });
+
+    // 7. Generate tokens
+    const accessToken = await generateToken(savedUser._id.toString());
+    const refreshToken = await generateRefreshToken(savedUser._id.toString());
+
+    // 8. Store refresh token in cookie
+    res.cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'strict',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
-        // Respond with the user data and token
+
+    // 9. Respond
     res.status(201).json({
-            message: 'User created successfully. Please check your email to verify your account.',
-            user: {
-                id: newUser._id,
-                name: newUser.name,
-                email: newUser.email,
-            },
-            accessToken});
-        return;       
-    } catch (error) {
-        console.error('Error signing up user:', error);
-        res.status(500).json({ message: 'Internal server error' });
-        return;
-    }
-}
+      message: 'User created successfully. Please check your email to verify your account.',
+      user: {
+        id: savedUser._id,
+        name: savedUser.name,
+        email: savedUser.email,
+      },
+      accessToken,
+    });
+    return;
+  } catch (error) {
+    console.error('Error signing up user:', error);
+    res.status(500).json({ message: 'Internal server error' });
+    return;
+  }
+};
+
 //login user
 export const loginUser=async (req: Request, res: Response): Promise<void> => {
     try{
@@ -151,7 +161,7 @@ export const loginUser=async (req: Request, res: Response): Promise<void> => {
 export const verifyEmail = async (req: Request, res: Response): Promise<void> => {
   const { token } = req.params;
   const jwt_email_secret = process.env.JWT_EMAIL_SECRET;
-  const clientURL = process.env.CLIENT_URL; // Frontend base URL
+  const clientURL = process.env.CLIENT_URL; 
 
   if (!token || !jwt_email_secret || !clientURL) {
     res.status(400).json({ message: 'Invalid server configuration or missing token.' });
@@ -167,7 +177,7 @@ export const verifyEmail = async (req: Request, res: Response): Promise<void> =>
     }
 
     if (user.isVerified) {
-      return res.redirect(`${clientURL}/verify-success`); // Already verified is still success
+      return res.redirect(`${clientURL}/verify-success`);
     }
 
     user.isVerified = true;

@@ -6,13 +6,13 @@ import { FaEye, FaEyeSlash, FaLock, FaUser,FaEnvelope } from 'react-icons/fa';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 export const RegisterUser = () => {
-  const [successMessage, setSuccessMessage] = useState('');
+  const [successMessage] = useState('');
   const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate(); 
   const {
     register,
     handleSubmit,
-    reset,
+    
     formState: { errors, isSubmitting },
   } = useForm<registerSchemaType>({
     resolver: zodResolver(registerSchema),
@@ -23,13 +23,8 @@ export const RegisterUser = () => {
   const onSubmit = async (data: registerSchemaType) => {
     try {
       await mutateAsync(data);
-      setSuccessMessage(
-        'Registration successful! Please check your email to verify your account.'
-      );
-      reset();
-      setTimeout(()=>{
-        navigate('/login')
-      },3000)
+      navigate('/verify-pending', { state: { email: data.email } });
+
     } catch (err) {
       // Handled by error state
     }

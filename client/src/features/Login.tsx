@@ -28,10 +28,8 @@ const onSubmit = async (data: LoginSchemaType) => {
     localStorage.setItem("userId", res.user.id);
     localStorage.setItem("accessToken", res.accessToken);
     
-
-    navigate('/verify-otp', {
-      state: { message: 'Login successful. Please enter the OTP sent to your email.' }
-    });
+    navigate("/dashboard");
+    
   } catch (err) {
     // Handled by error state
   }

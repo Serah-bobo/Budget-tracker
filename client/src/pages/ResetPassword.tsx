@@ -3,10 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { resetPasswordSchema, ResetPasswordSchemaType } from "../schemas/resetPassword";
 import { useResetPassword } from "../api/auth";
 import { useParams, useNavigate } from "react-router-dom";
+import { FaEye, FaEyeSlash, FaLock } from "react-icons/fa";
+import { useState } from "react";
 
 export const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
   const { register, handleSubmit, formState: { errors } } = useForm<ResetPasswordSchemaType>({
     resolver: zodResolver(resetPasswordSchema),
@@ -19,9 +22,7 @@ export const ResetPassword = () => {
       mutate(
         { token, password: data.password },
         {
-          onSuccess: () => {
-            navigate("/login");
-          },
+          onSuccess: () => navigate("/password-reset-success"),
         }
       );
     }
@@ -43,22 +44,44 @@ export const ResetPassword = () => {
         </div>
       )}
 
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        <input
-          type="password"
-          {...register("password")}
-          placeholder="New Password"
-          className="w-full px-3 py-2 border rounded"
-        />
-        {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+      <form onSubmit={handleSubmit(onSubmit)} className="relative space-y-4">
+        {/* New Password Field */}
+        <div className="relative">
+          <FaLock className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("password")}
+            placeholder="New Password"
+            className="w-full py-2 pl-10 pr-10 border rounded"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute text-gray-600 transform -translate-y-1/2 right-3 top-1/2"
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+          {errors.password && <p className="text-sm text-red-600">{errors.password.message}</p>}
+        </div>
 
-        <input
-          type="password"
-          {...register("confirmPassword")}
-          placeholder="Confirm New Password"
-          className="w-full px-3 py-2 border rounded"
-        />
-        {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
+        {/* Confirm Password Field */}
+        <div className="relative">
+          <FaLock className="absolute text-gray-400 transform -translate-y-1/2 left-3 top-1/2" />
+          <input
+            type={showPassword ? "text" : "password"}
+            {...register("confirmPassword")}
+            placeholder="Confirm New Password"
+            className="w-full py-2 pl-10 pr-10 border rounded"
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute text-gray-600 transform -translate-y-1/2 right-3 top-1/2"
+          >
+            {showPassword ? <FaEyeSlash /> : <FaEye />}
+          </button>
+          {errors.confirmPassword && <p className="text-sm text-red-600">{errors.confirmPassword.message}</p>}
+        </div>
 
         <button
           type="submit"

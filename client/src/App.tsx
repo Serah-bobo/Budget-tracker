@@ -20,16 +20,23 @@ import GroupDetails from './dashboardDetails/GroupDetails';
 import CreateGroup from "dashboardDetails/CreateGroup";
 import { Toaster } from "react-hot-toast";
 import JoinGroup from "dashboardDetails/JoinGroup";
+import { VerifyPending } from "pages/VerifyPending";
+import ResetLink from "pages/ResetLink";
+import PasswordSuccess from "pages/PasswordSuccess";
+
 const App = () => {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
       <Route path="/" element={<Layout />}>
       <Route index element={<Home />} />
-      <Route path="/register" element={<RegisterUser />} />
+      <Route path="/signup" element={<RegisterUser />} />
       <Route path="/login" element={<LoginUser />} />
-      <Route path="/verify-success" element={<EmailVerified />} /> {/* ✅ New route */}
-      <Route path="/verify-failed" element={<VerifyFailed />} /> {/* ✅ New route for verification failure */}
+      <Route path="/verify-success" element={<EmailVerified />} />
+      <Route path="/verify-failed" element={<VerifyFailed />} /> 
+      <Route path="/verify-pending" element={<VerifyPending />} />
+      <Route path="/reset-link-sent" element={<ResetLink />} />
+      <Route path="/password-reset-success" element={<PasswordSuccess />} />
       <Route path="/verify-otp" element={<VerifyOtp />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
       <Route path="/reset-password/:token" element={<ResetPassword />} />

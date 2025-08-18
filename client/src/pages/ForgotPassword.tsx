@@ -8,7 +8,7 @@ import {
 import { useForgotPassword } from "../api/auth";
 import { FaEnvelope } from "react-icons/fa";
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
 
 export const ForgotPassword = () => {
   const [successMessage, setSuccessMessage] = useState("");
@@ -21,11 +21,11 @@ export const ForgotPassword = () => {
   });
 
   const { mutate, isPending, error } = useForgotPassword();
-
+  const navigate = useNavigate();
   const onSubmit = (data: ForgotPasswordSchemaType) => {
     mutate(data, {
       onSuccess: () => {
-        setSuccessMessage("Password reset email sent! Check your inbox.");
+        navigate("/reset-link-sent")
       },
     });
   };

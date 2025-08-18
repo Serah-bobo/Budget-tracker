@@ -29,7 +29,11 @@ export const sendEmail=async (emailDetails: emailDetails): Promise<void> => {
             subject: emailDetails.subject, // Subject of the email
             html: emailDetails.html // Plain text content of the email
         });
-        console.log('Email sent successfully:', emailInfo.response);
+         if (emailInfo && emailInfo.response?.includes("OK")) {
+            console.log("✅ Email sent successfully:", emailInfo.response);
+        } else {
+            console.warn("⚠️ Email may have issues:", emailInfo);
+        }
     }catch (error) {
         console.error('Error sending email:', error);
         throw new Error('Email sending failed');
